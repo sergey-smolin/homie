@@ -1,0 +1,6 @@
+/uploads/*
+!uploads/.gitkeep
+/tags
+/models/*
+!models/.gitkeep
+.env
