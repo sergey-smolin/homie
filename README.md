@@ -33,11 +33,11 @@ All components run locally with no external API dependencies, ensuring privacy a
    - docker build -t homie_tts .
    - downloads kokoro package with dependencies during the installation which is around 2-5GB currently
 
-5. **Start the Stack**
-   - Start the compose stack with Docker/Podman
-
-6. **Add docker network**
+5. **Add docker network**
    - docker network create homie_net
+
+6. **Start the Stack**
+   - Start the compose stack with Docker/Podman
 
 7. **Pull Initial Ollama Model**
    - After starting the stack (make sure homie_ollama has been started), run:
