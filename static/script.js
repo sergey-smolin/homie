@@ -15,7 +15,7 @@ async function startRecording() {
     mediaRecorder.onstop = async () => {
       const blob = new Blob(chunks, { type: 'audio/webm' });
       try {
-        const response = await fetch('http://127.0.0.1:5000/upload', {
+        const response = await fetch('/upload', {
           method: 'POST',
           body: blob
         });
@@ -118,6 +118,64 @@ function updateStatus(message) {
   }
   console.log(message);
 }
+
+// Chat functionality
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
+
+function appendMessage(text, isUser) {
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+  messageDiv.textContent = text;
+  chatMessages.appendChild(messageDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+async function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+
+  // Disable input and button while sending
+  chatInput.disabled = true;
+  sendBtn.disabled = true;
+
+  // Show user message immediately
+  appendMessage(text, true);
+  chatInput.value = '';
+
+  try {
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message: text })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Server error: ${response.status} - ${errText}`);
+    }
+
+    const data = await response.json();
+    appendMessage(data.response, false);
+  } catch (err) {
+    console.error('Chat error:', err);
+    appendMessage('Error: ' + err.message, false);
+  } finally {
+    chatInput.disabled = false;
+    sendBtn.disabled = false;
+    chatInput.focus();
+  }
+}
+
+sendBtn.addEventListener('click', sendMessage);
+chatInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    sendMessage();
+  }
+});
 
 const startBtn = document.getElementById('startBtn');
 const stopBtn = document.getElementById('stopBtn');

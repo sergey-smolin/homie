@@ -18,8 +18,8 @@ async def upload_audio(request: Request):
 
     # Collect all audio chunks in a list
     audio_chunks = []
-    for i, (gs, ps, audio) in enumerate(generator):
-        print(f"Chunk {i}: {gs} | {ps}")
+    for i, (gs, _, audio) in enumerate(generator):
+        print(f"Chunk {i}: {gs}")
         audio_chunks.append(audio)
 
     if not audio_chunks:
