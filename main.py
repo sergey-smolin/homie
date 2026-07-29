@@ -19,7 +19,6 @@ print("LLM_NAME var:", LLM_NAME)
 
 if LLM_NAME is None:
     raise RuntimeError("LLM_NAME is not set")
-print("log_level:", "warning")
 
 http_client = httpx.AsyncClient(timeout=300.0)
 
