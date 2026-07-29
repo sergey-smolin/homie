@@ -7,12 +7,18 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
+
 app = FastAPI()
 
 # Configuration
 TRANSCRIPTION_SERVER_URL = "http://homie_whisper:8080/inference"
 OLLAMA_HOST_URL = "http://homie_ollama:11434"
 TTS_HOST_URL = "http://homie_tts:5001"
+LLM_NAME = os.getenv("LLM_NAME")
+print("LLM_NAME var:", LLM_NAME)
+
+if LLM_NAME is None:
+    raise RuntimeError("LLM_NAME is not set")
 
 http_client = httpx.AsyncClient(timeout=300.0)
 
@@ -83,7 +89,7 @@ async def upload_audio(request: Request):
 
     # 3. Forward Prompt -> Ollama
     ollama_payload = {
-        "model": "qwen3:0.6b",
+        "model": LLM_NAME,
         "prompt": user_prompt,
         "stream": False
     }
