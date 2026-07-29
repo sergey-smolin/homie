@@ -34,6 +34,8 @@ services:
   homie_main:
     image: homie_main
     container_name: homie_main
+    env_file:
+      - .env
     ports:
       - "5000:5000"
     networks:

@@ -47,6 +47,8 @@ All components run locally with no external API dependencies, ensuring privacy a
    - this will download the qwen3:0.6b
    - currently only works with qwen3:0.6b. TODO: add any model.
    - Note: `qwen3:0.6b` is very small and lightweight but inference quality may be limited
+   - you can download additional models with this command. In case of a cloud model it will just make it available without a download.
+       but you would have to log into ollama web interface when prompted
 
 8. Make sure all 4 services have started. Now you can use the app.
 
