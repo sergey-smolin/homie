@@ -66,6 +66,49 @@ async def chat_endpoint(chat_message: ChatMessage):
 
     return JSONResponse(content={"response": llm_text})
 
+@app.post("/tts")
+async def tts_endpoint(chat_message: ChatMessage):
+    """
+    Receives a text message, sends to TTS service, returns audio/wav.
+    """
+    text = chat_message.message
+    if not text:
+        raise HTTPException(status_code=400, detail="No message provided")
+
+    tts_url = f"{TTS_HOST_URL}/upload"
+
+    try:
+        print(f"[Proxy] Requesting TTS from Kokoro: {tts_url}")
+        tts_resp = await http_client.post(
+            tts_url,
+            content=text.encode('utf-8'),
+            headers={"Content-Type": "text/plain; charset=utf-8"},
+            timeout=300.0
+        )
+        tts_resp.raise_for_status()
+
+        # Return complete audio response directly
+        return Response(
+            content=tts_resp.content,
+            media_type="audio/wav",
+            headers={
+                "Content-Disposition": "inline; filename=response.wav",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+                "Content-Length": str(len(tts_resp.content)),
+            }
+        )
+    except httpx.RequestError as e:
+        raise HTTPException(status_code=502, detail=f"tts unreachable: {e}")
+    except httpx.HTTPStatusError as e:
+        try:
+            err_body = await e.response.aread()
+            detail = f"tts error: {err_body.decode()}"
+        except Exception:
+            detail = f"tts error: {e.response.status_code}"
+        raise HTTPException(status_code=502, detail=detail)
+
 @app.post("/upload")
 async def upload_audio(request: Request):
     """
