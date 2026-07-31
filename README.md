@@ -1,4 +1,4 @@
-# Local first Voice Chat Assistant
+# Local first Voice Chat AI Assistant
 
 Includes fully local setup for three parts of a voice enabled AI assistant:
 a speach recognition model, an LLM, and a text-to-speech model. The development and testing
@@ -36,9 +36,9 @@ All components run locally with no external API dependencies, ensuring privacy a
    - downloads kokoro package with dependencies during the installation which is around 2-5GB currently
 
 5. **Add Docker network**
-   - ```bash
-     docker network create homie_net
-     ```
+   ```bash
+   docker network create homie_net
+   ```
 
 6. **Start the Stack**
    - Start the compose stack with Docker/Podman
@@ -53,11 +53,11 @@ All components run locally with no external API dependencies, ensuring privacy a
      For example `qwen3:0.6b`, `gemma4:12b`, etc.
    - Note: `qwen3:0.6b` is very small and lightweight but inference quality may be limited
    - In case of a cloud model it will just make it available without a download.
-       but you would have to log into Ollama's web interface:
+     but you would have to log into Ollama's web interface:
      ```bash
      docker exec homie_ollama ollama signin
      ```
 
-8. Make sure all 4 services have started. Now you can use the app at 127.0.0.1:5000
+8. Make sure all 4 services have started. Now you can use the app in the browser at **127.0.0.1:5000**
 
-*TODO: Add `build:` sections to compose file for automated builds*
+*TODO: Add `build:` sections to compose file for automated image builds*

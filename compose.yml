@@ -25,7 +25,6 @@ services:
     container_name: homie_tts
     volumes:
       - ${PROJECT_PATH:?PROJECT_PATH is not set. Please define it in your .env file or environment}/tts/hf-cache:/cache/huggingface
-      - ${PROJECT_PATH:?PROJECT_PATH is not set. Please define it in your .env file or environment}/tts/audio_output:/audio
     networks:
       - homie_net
     stdin_open: true

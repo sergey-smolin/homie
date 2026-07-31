@@ -16,10 +16,10 @@ async def upload_audio(request: Request):
 
     generator = pipeline(text_data, voice='af_heart')
 
-    # Collect all audio chunks in a list
+    # Collect all audio chunks (NumPy arrays) in a list
     audio_chunks = []
-    for i, (gs, ps, audio) in enumerate(generator):
-        print(f"Chunk {i}: {gs} | {ps}")
+    for i, (gs, _, audio) in enumerate(generator):
+        print(f"Chunk {i}: {gs}")
         audio_chunks.append(audio)
 
     if not audio_chunks:
