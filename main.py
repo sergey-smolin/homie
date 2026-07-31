@@ -4,8 +4,9 @@ import httpx
 import subprocess
 from pathlib import Path
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
 
 app = FastAPI()
@@ -29,6 +30,84 @@ async def shutdown_event():
 @app.get("/")
 def root():
     return FileResponse(Path("index.html"))
+
+class ChatMessage(BaseModel):
+    message: str
+
+@app.post("/chat")
+async def chat_endpoint(chat_message: ChatMessage):
+    """
+    Receives a text message, sends to Ollama, returns the LLM response as text.
+    """
+    user_prompt = chat_message.message
+    if not user_prompt:
+        raise HTTPException(status_code=400, detail="No message provided")
+
+    # Forward Prompt -> Ollama
+    ollama_payload = {
+        "model": LLM_NAME,
+        "prompt": user_prompt,
+        "stream": False
+    }
+
+    try:
+        ollama_url = f"{OLLAMA_HOST_URL}/api/generate"
+        print(f"[Proxy] Sending to Ollama: {ollama_url}")
+        ollama_resp = await http_client.post(ollama_url, json=ollama_payload)
+        ollama_resp.raise_for_status()
+        ollama_result = ollama_resp.json()
+        llm_text = ollama_result.get("response", "")
+    except httpx.RequestError as e:
+        raise HTTPException(status_code=502, detail=f"Ollama unreachable at {OLLAMA_HOST_URL}: {e}")
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=502, detail=f"Ollama error: {e.response.text}")
+
+    print("Ollama response: ", llm_text)
+
+    return JSONResponse(content={"response": llm_text})
+
+@app.post("/tts")
+async def tts_endpoint(chat_message: ChatMessage):
+    """
+    Receives a text message, sends to TTS service, returns audio/wav.
+    """
+    text = chat_message.message
+    if not text:
+        raise HTTPException(status_code=400, detail="No message provided")
+
+    tts_url = f"{TTS_HOST_URL}/upload"
+
+    try:
+        print(f"[Proxy] Requesting TTS from Kokoro: {tts_url}")
+        tts_resp = await http_client.post(
+            tts_url,
+            content=text.encode('utf-8'),
+            headers={"Content-Type": "text/plain; charset=utf-8"},
+            timeout=300.0
+        )
+        tts_resp.raise_for_status()
+
+        # Return complete audio response directly
+        return Response(
+            content=tts_resp.content,
+            media_type="audio/wav",
+            headers={
+                "Content-Disposition": "inline; filename=response.wav",
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0",
+                "Content-Length": str(len(tts_resp.content)),
+            }
+        )
+    except httpx.RequestError as e:
+        raise HTTPException(status_code=502, detail=f"tts unreachable: {e}")
+    except httpx.HTTPStatusError as e:
+        try:
+            err_body = await e.response.aread()
+            detail = f"tts error: {err_body.decode()}"
+        except Exception:
+            detail = f"tts error: {e.response.status_code}"
+        raise HTTPException(status_code=502, detail=detail)
 
 @app.post("/upload")
 async def upload_audio(request: Request):
