@@ -28,11 +28,11 @@ All components run locally with no external API dependencies, ensuring privacy a
 
 3. **Build the main image**
    - in the root directory run 
-   - docker build -t homie_main .
+   - `docker build -t homie_main .`
 
 4. **Build TTS image**
    - go to tts folder
-   - docker build -t homie_tts .
+   - `docker build -t homie_tts .`
    - downloads kokoro package with dependencies during the installation which is around 2-5GB currently
 
 5. **Add Docker network**
@@ -42,6 +42,10 @@ All components run locally with no external API dependencies, ensuring privacy a
 
 6. **Start the Stack**
    - Start the compose stack with Docker/Podman
+   - docker compose up
+   - to use gpu `docker compose -f compose.yml -f compose.gpu.yml up`
+   This is linux specific I think. Also you need to install NVidia drivers and NVidia Container toolkit
+   (I wasn't yet able to make stt container use GPU but it may work for you)
 
 7. **Pull Initial Ollama Model**
    - After starting the stack (make sure homie_ollama has been started), run:

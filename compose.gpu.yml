@@ -1,0 +1,11 @@
+services:
+  homie_ollama:
+    devices:
+      - "nvidia.com/gpu=all"
+  homie_whisper:
+    image: ghcr.io/ggml-org/whisper.cpp:main-cuda
+    devices:
+      - "nvidia.com/gpu=all"
+  homie_tts:
+    devices:
+      - "nvidia.com/gpu=all"
