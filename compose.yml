@@ -1,13 +1,13 @@
 services:
-  homie_ollama:
+  homie_llm:
     image: ollama/ollama
-    container_name: homie_ollama
+    container_name: homie_llm
     volumes:
       - ollama:/root/.ollama
     restart: unless-stopped
-  homie_whisper:
+  homie_stt:
     image: ghcr.io/ggml-org/whisper.cpp:main
-    container_name: homie_whisper
+    container_name: homie_stt
     command: ["whisper-server --host 0.0.0.0 -m /models/${STT_MODEL:?STT_MODEL is not set. Please define it in your .env file or environment}"]
     volumes:
       - ${PROJECT_PATH:?PROJECT_PATH is not set. Please define it in your .env file or environment}/models:/models
