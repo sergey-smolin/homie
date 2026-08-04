@@ -60,3 +60,5 @@ All components run locally with no external API dependencies, ensuring privacy a
 7. Make sure all 4 services have started. Now you can use the app in the browser at **127.0.0.1:5000**
 
 *TODO: Add `build:` sections to compose file for automated image builds*
+*TODO: Ollama (or llama.cpp under the hood) does a warmup run with and empty prompt after initial user prompt is received
+but before it is processed this leads to delay on the first prompt. Need to look into whether this can be disabled without consequences.

@@ -12,8 +12,8 @@ from pydantic import BaseModel
 app = FastAPI()
 
 # Configuration
-TRANSCRIPTION_SERVER_URL = "http://homie_whisper:8080/inference"
-OLLAMA_HOST_URL = "http://homie_ollama:11434"
+TRANSCRIPTION_SERVER_URL = "http://homie_stt:8080/inference"
+OLLAMA_HOST_URL = "http://homie_llm:11434"
 TTS_HOST_URL = "http://homie_tts:5001"
 LLM_NAME = os.getenv("LLM_NAME")
 print("LLM_NAME var:", LLM_NAME)

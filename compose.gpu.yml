@@ -1,8 +1,8 @@
 services:
-  homie_ollama:
+  homie_llm:
     devices:
       - "nvidia.com/gpu=all"
-  homie_whisper:
+  homie_stt:
     image: ghcr.io/ggml-org/whisper.cpp:main-cuda
     devices:
       - "nvidia.com/gpu=all"
