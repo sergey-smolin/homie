@@ -126,7 +126,7 @@ function appendMessage(text, isUser, skipScroll = false) {
 
   const contentDiv = document.createElement('div');
   contentDiv.style.display = 'flex';
-  contentDiv.style.alignItems = 'center';
+  contentDiv.style.flexDirection = 'column';
   contentDiv.style.gap = '0.5rem';
 
   const textSpan = document.createElement('span');
@@ -135,8 +135,8 @@ function appendMessage(text, isUser, skipScroll = false) {
 
   if (!isUser) {
     const ttsBtn = document.createElement('button');
-    ttsBtn.textContent = 'Play TTS';
-    ttsBtn.style.cssText = 'padding:0.25rem 0.5rem;font-size:0.8rem;border-radius:4px;background:#28a745;color:white;border:none;cursor:pointer';
+    ttsBtn.textContent = 'Read aloud';
+    ttsBtn.style.cssText = 'padding:0.25rem 0.5rem;font-size:0.8rem;border-radius:4px;background:#28a745;color:white;border:none;cursor:pointer;align-self:flex-start';
     ttsBtn.onclick = () => playTTS(text);
     contentDiv.appendChild(ttsBtn);
   }
